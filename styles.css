@@ -1,0 +1,97 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #eef2f3;
+    margin: 0;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+#controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+select, button {
+    margin: 0 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+select:hover, button:hover {
+    background-color: #0056b3;
+}
+select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+#infoPanel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+h3 {
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 5px;
+    color: #007BFF;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+th {
+    background-color: #007BFF;
+    color: white;
+}
+svg {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+.node {
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
+.link {
+    fill: none;
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+.shortest-path {
+    stroke: red;
+    stroke-width: 2px;
+}
+.selected-node {
+    fill: orange;
+    stroke: #ff8800;
+    stroke-width: 3px;
+}
+.loop {
+    fill: none;
+    stroke: #999;
+    stroke-width: 2;
+}
+.loop-label {
+    fill: black;
+    text-anchor: middle;
+    font-size: 12px;
+}
+#graphContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
