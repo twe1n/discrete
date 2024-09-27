@@ -119,6 +119,7 @@ const renderLabels = () => {
         .attr("class", "label")
         .attr("dx", 12)
         .attr("dy", ".35em")
+        .attr("fill", "#FFFFFF") // Установим цвет текста на белый
         .text(d => d.id);
 };
 
@@ -129,6 +130,7 @@ const renderLinkLabels = () => {
         .attr("class", "link-label")
         .attr("text-anchor", "middle")
         .attr("dy", -5)
+        .attr("fill", "#FFFFFF") // Установим цвет текста на белый
         .text(d => d.duration)
         .on("click", updateLinkDuration);
 };
@@ -455,6 +457,7 @@ const ticked = () => {
         d3.select(this)
             .attr("x", node.x)
             .attr("y", node.y - 20)
+            .attr("fill", "#FFFFFF") // Установим цвет текста на белый
             .text(loopLabel);
     });
 };

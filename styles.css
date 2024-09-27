@@ -1,12 +1,98 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eef2f3;
+    background-color: #2e2e2e; /* Темный фон */
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #111; /* Темный фон */
+}
+.container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    flex-direction: column; /* Для вертикального размещения */
+}
+.card {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+.card img {
+    border-radius: 50%; /* Круглая форма */
+    object-fit: cover; /* Обрезка изображения */
+    margin-right: 20px; /* Отступ справа */
+}
+.card-info {
+    color: rgba(255, 255, 255, 0.9);
+    text-align: right; /* Выравнивание текста вправо */
+    flex-grow: 1; /* Занимает оставшееся пространство */
+    position: relative; /* Для позиционирования маленькой картинки */
+}
+.github-icon {
+    width: 20px; /* Размер иконки */
+    height: 20px; /* Размер иконки */
+    cursor: pointer; /* Указатель на иконке */
+    margin-left: 0px; /* Отступ слева уменьшен */
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+.card-details {
+    margin-top: 10px;
+}
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+.detail-label {
+    font-weight: bold;
+    color: #007BFF; /* Цвет для названий */
+}
+.menu {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.menu button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    color: #fff;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s;
+}
+.menu button:hover {
+    background-color: #555;
+}
+select, button {
+    margin: 0 10px;
+    padding: 15px 30px;
+    background-color: #333; /* Как у остальных кнопок */
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+select:hover, button:hover {
+    background-color: #555;; /* Темнее при наведении */
+}
+select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 h1 {
     text-align: center;
-    color: #333;
+    color: #ffffff; /* Белый текст для заголовка */
     margin-bottom: 20px;
 }
 #controls {
@@ -14,35 +100,18 @@ h1 {
     justify-content: center;
     margin-bottom: 20px;
 }
-select, button {
-    margin: 0 10px;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-select:hover, button:hover {
-    background-color: #0056b3;
-}
-select:focus, button:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
 #infoPanel {
-    background: white;
+    background: #222; /* Темный фон для панели информации */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
     margin-top: 20px;
+    color: #ffffff; /* Белый текст */
 }
 h3 {
     border-bottom: 2px solid #007BFF;
     padding-bottom: 5px;
-    color: #007BFF;
+    color: #007BFF; /* Синий текст для заголовков */
 }
 table {
     width: 100%;
@@ -50,25 +119,25 @@ table {
     margin-top: 10px;
 }
 th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #444; /* Темный цвет границ */
     padding: 8px;
     text-align: center;
 }
 th {
-    background-color: #007BFF;
-    color: white;
+    background-color: #007BFF; /* Синий фон для заголовков таблицы */
+    color: white; /* Белый текст для заголовков таблицы */
 }
 svg {
     margin-top: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #444; /* Темные границы для SVG */
 }
 .node {
-    stroke: #ccc;
+    stroke: #aaa; /* Светло-серый цвет для узлов */
     stroke-width: 1.5px;
 }
 .link {
     fill: none;
-    stroke: #999;
+    stroke: #666; /* Темно-серый цвет для связей */
     stroke-opacity: 0.6;
 }
 .shortest-path {
@@ -82,11 +151,11 @@ svg {
 }
 .loop {
     fill: none;
-    stroke: #999;
+    stroke: #666; /* Темно-серый цвет для петель */
     stroke-width: 2;
 }
 .loop-label {
-    fill: black;
+    fill: white; /* Белый цвет для текстов петель */
     text-anchor: middle;
     font-size: 12px;
 }

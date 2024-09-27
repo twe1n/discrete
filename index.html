@@ -3,59 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Алгоритмы на графах</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Подключаем CSS файл -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="scripts.js" defer></script> <!-- Подключаем JS файл -->
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
 
-    <h1>Алгоритмы на графах</h1>
+        <!-- Карточка с информацией -->
+        <div class="card">
+            <img src="https://avatars.githubusercontent.com/u/102920668?v=4" width="150" height="150" alt="Картинка профиля">
+            <div class="card-info">
+                <h3>
+                    Дмитрий Шарапов
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="20" height="20" alt="GitHub" class="github-icon" onclick="window.open('https://github.com/twe1n', '_blank')">
+                </h3>
 
-    <div id="controls">
-        <button id="loadPreset1">Загрузить Пресет #1</button>
-        <button id="loadPreset2">Загрузить Пресет #2</button>
-        <select id="nodeSelect"></select>
-        <button id="dijkstraButton">Запустить Дейкстру</button>
-        <button id="floydButton">Запустить Флойда</button>
+                <div class="card-details">
+                    <div class="detail-row">
+                        <span class="detail-label">ВУЗ</span>
+                        <span>ЮУрГУ НИУ</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Факультет</span>
+                        <span>МиКМ</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Группа</span>
+                        <span>ЕТ-411</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu">
+            <!-- Кнопки -->
+            <button onclick="location.href='dijkstra.html'">Алгоритмы Дейкстры, Флойда</button>
+        </div>
     </div>
-
-    <div id="graphContainer">
-        <svg width="800" height="600"></svg>
-    </div>
-
-    <div id="infoPanel">
-        <h3>Информационная панель (Дейкстра)</h3>
-        <table id="dijkstraTable">
-            <thead>
-                <tr>
-                    <th>Шаг</th>
-                    <th>A</th>
-                    <th>B</th>
-                    <th>C</th>
-                    <th>D</th>
-                    <th>E</th>
-                    <th>Выбранная вершина</th>
-                </tr>
-            </thead>
-            <tbody id="dijkstraTableBody"></tbody>
-        </table>
-        
-        <h3>Результаты (Флойд)</h3>
-        <table id="floydTable">
-            <thead>
-                <tr>
-                    <th>Из / В</th>
-                    <th>A</th>
-                    <th>B</th>
-                    <th>C</th>
-                    <th>D</th>
-                    <th>E</th>
-                </tr>
-            </thead>
-            <tbody id="floydTableBody"></tbody>
-        </table>
-    </div>
-
 </body>
 </html>

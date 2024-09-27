@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгоритмы Дейкстры, Флойда</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключаем CSS файл -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="scripts.js" defer></script> <!-- Подключаем JS файл -->
+</head>
+<body>
+    <h1>Алгоритмы Дейкстры, Флойда</h1>
+
+    <div id="controls">
+        <button id="loadPreset1">Загрузить Пресет #1</button>
+        <button id="loadPreset2">Загрузить Пресет #2</button>
+        <select id="nodeSelect"></select>
+        <button id="dijkstraButton">Запустить Дейкстру</button>
+        <button id="floydButton">Запустить Флойда</button>
+        <button onclick="location.href='index.html'">На главную</button>
+    </div>
+
+    <div id="graphContainer">
+        <svg width="800" height="600"></svg>
+    </div>
+
+    <div id="infoPanel">
+        <h3>Информационная панель (Дейкстра)</h3>
+        <table id="dijkstraTable">
+            <thead>
+                <tr>
+                    <th>Шаг</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>Выбранная вершина</th>
+                </tr>
+            </thead>
+            <tbody id="dijkstraTableBody"></tbody>
+        </table>
+        
+        <h3>Результаты (Флойд)</h3>
+        <table id="floydTable">
+            <thead>
+                <tr>
+                    <th>Из / В</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                </tr>
+            </thead>
+            <tbody id="floydTableBody"></tbody>
+        </table>
+    </div>
+
+</body>
+</html>
