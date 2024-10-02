@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Представление графов в памяти ЭВМ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>Представление графов в памяти ЭВМ</h1>
+<div id="controls">
+    <button onclick="location.href='index.html'">На главную</button>
+</div>
+
+<h2>1. Матрица смежности</h2>
+<textarea id="adjMatrixInput" placeholder="Введите матрицу смежности" oninput="updateFromMatrix()"></textarea>
+<button onclick="saveMatrixAsFile()">Скачать матрицу</button>
+<label class="upload-button">
+    Загрузить
+    <input type="file" accept=".txt" onchange="loadMatrixFromFile(event)">
+</label>
+
+<h2>2. Список рёбер</h2>
+<textarea id="edgeListInput" placeholder="Введите список рёбер" oninput="updateFromEdgeList()"></textarea>
+<button onclick="saveEdgeListAsFile()">Скачать список рёбер</button>
+<label class="upload-button">
+    Загрузить
+    <input type="file" accept=".txt" onchange="loadEdgeListFromFile(event)">
+</label>
+
+<h2>3. Список смежности</h2>
+<textarea id="adjListInput" placeholder="Введите список смежности" oninput="updateFromAdjList()"></textarea>
+<button onclick="saveAdjListAsFile()">Скачать список смежности</button>
+<label class="upload-button">
+    Загрузить
+    <input type="file" accept=".txt" onchange="loadAdjListFromFile(event)">
+</label>
+
+<script>
+    let vertices = 0;
+
+    // Парсеры
+    function parseAdjMatrix(input) {
+        const lines = input.trim().split('\n');
+        vertices = parseInt(lines[0]);
+        const matrix = lines.slice(1).map(line => line.trim().split(' ').map(Number));
+        return matrix;
+    }
+
+    function parseEdgeList(input) {
+        const lines = input.trim().split('\n');
+        const [vCount, eCount] = lines[0].trim().split(' ').map(Number);
+        vertices = vCount;
+        const edges = lines.slice(1).map(line => line.trim().split(' ').map(Number));
+        return edges;
+    }
+
+    function parseAdjList(input) {
+        const lines = input.trim().split('\n');
+        vertices = parseInt(lines[0]);
+        const adjList = lines.slice(1).map(line => line.trim().split(' ').map(Number));
+        return adjList;
+    }
+
+    // Форматировщики
+    function formatAdjMatrix(matrix) {
+        return `${vertices}\n` + matrix.map(row => row.join(' ')).join('\n');
+    }
+
+    function formatEdgeList(edges) {
+        const eCount = edges.length;
+        return `${vertices} ${eCount}\n` + edges.map(edge => edge.join(' ')).join('\n');
+    }
+
+    function formatAdjList(adjList) {
+        return `${vertices}\n` + adjList.map(list => `${list.length / 2} ${list.join(' ')}`).join('\n');
+    }
+
+    // Преобразования
+    function convertAdjMatrixToEdgeList(matrix) {
+        const edges = [];
+        for (let i = 0; i < vertices; i++) {
+            for (let j = 0; j < vertices; j++) {
+                if (matrix[i][j] > 0) {
+                    edges.push([i + 1, j + 1, matrix[i][j]]);
+                }
+            }
+        }
+        return edges;
+    }
+
+    function convertEdgeListToAdjMatrix(edges) {
+        const matrix = Array.from({ length: vertices }, () => Array(vertices).fill(0));
+        for (const [from, to, weight] of edges) {
+            matrix[from - 1][to - 1] = weight;
+        }
+        return matrix;
+    }
+
+    function convertAdjListToAdjMatrix(adjList) {
+        const matrix = Array.from({ length: vertices }, () => Array(vertices).fill(0));
+        for (let i = 0; i < vertices; i++) {
+            for (let j = 1; j < adjList[i].length; j += 2) {
+                const to = adjList[i][j] - 1;
+                const weight = adjList[i][j + 1];
+                matrix[i][to] = weight;
+            }
+        }
+        return matrix;
+    }
+
+    function convertAdjMatrixToAdjList(matrix) {
+        const adjList = [];
+        for (let i = 0; i < vertices; i++) {
+            const list = [];
+            for (let j = 0; j < vertices; j++) {
+                if (matrix[i][j] > 0) {
+                    list.push(j + 1, matrix[i][j]);
+                }
+            }
+            adjList.push(list);
+        }
+        return adjList;
+    }
+
+    function convertEdgeListToAdjList(edges) {
+        const adjList = Array.from({ length: vertices }, () => []);
+        edges.forEach(([from, to, weight]) => {
+            adjList[from - 1].push(to, weight);
+        });
+        return adjList;
+    }
+
+    // Обновление полей ввода
+    let updating = false;
+
+    function updateFromMatrix() {
+        if (updating) return;
+        updating = true;
+
+        const input = document.getElementById('adjMatrixInput').value;
+        const matrix = parseAdjMatrix(input);
+        const edgeList = convertAdjMatrixToEdgeList(matrix);
+        const adjList = convertAdjMatrixToAdjList(matrix);
+        
+        document.getElementById('edgeListInput').value = formatEdgeList(edgeList);
+        document.getElementById('adjListInput').value = formatAdjList(adjList);
+        updating = false;
+    }
+
+    function updateFromEdgeList() {
+        if (updating) return;
+        updating = true;
+
+        const input = document.getElementById('edgeListInput').value;
+        const edges = parseEdgeList(input);
+        const adjMatrix = convertEdgeListToAdjMatrix(edges);
+        const adjList = convertEdgeListToAdjList(edges);
+
+        document.getElementById('adjMatrixInput').value = formatAdjMatrix(adjMatrix);
+        document.getElementById('adjListInput').value = formatAdjList(adjList);
+        updating = false;
+    }
+
+    function updateFromAdjList() {
+        if (updating) return;
+        updating = true;
+
+        const input = document.getElementById('adjListInput').value;
+        const adjList = parseAdjList(input);
+        const adjMatrix = convertAdjListToAdjMatrix(adjList);
+        const edgeList = convertAdjMatrixToEdgeList(adjMatrix);
+
+        document.getElementById('adjMatrixInput').value = formatAdjMatrix(adjMatrix);
+        document.getElementById('edgeListInput').value = formatEdgeList(edgeList);
+        updating = false;
+    }
+
+    // Сохранение данных в файл
+    function saveMatrixAsFile() {
+        const content = document.getElementById('adjMatrixInput').value;
+        downloadFile('adjMatrix.txt', content);
+    }
+
+    function saveEdgeListAsFile() {
+        const content = document.getElementById('edgeListInput').value;
+        downloadFile('edgeList.txt', content);
+    }
+
+    function saveAdjListAsFile() {
+        const content = document.getElementById('adjListInput').value;
+        downloadFile('adjList.txt', content);
+    }
+
+    function downloadFile(filename, content) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    }
+
+    // Загрузка данных из файла
+    function loadMatrixFromFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('adjMatrixInput').value = e.target.result;
+                updateFromMatrix();
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function loadEdgeListFromFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('edgeListInput').value = e.target.result;
+                updateFromEdgeList();
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function loadAdjListFromFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('adjListInput').value = e.target.result;
+                updateFromAdjList();
+            };
+            reader.readAsText(file);
+        }
+    }
+</script>
+
+</body>
+</html>
