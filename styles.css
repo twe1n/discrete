@@ -1,21 +1,23 @@
 body {
-    background-color: #2e2e2e; /* Темный фон */
+    background-color: #ffffff; /* Белый фон */
     margin: 20px;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #111; /* Темный фон */
+    color: #333; /* Тёмно-серый текст */
 }
+
 .container {
     position: relative;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #111;
-    flex-direction: column; /* Для вертикального размещения */
+    background-color: #ffffff; /* Белый фон */
+    flex-direction: column; /* Вертикальное размещение */
 }
+
 .card {
-    background-color: #222;
+    background-color: #f9f9f9; /* Светлый фон карточки */
     border-radius: 10px;
     padding: 15px;
     display: flex;
@@ -23,161 +25,188 @@ body {
     width: 80%;
     max-width: 600px;
     margin: 20px auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Лёгкая тень для карточки */
 }
+
 .card img {
     border-radius: 50%; /* Круглая форма */
     object-fit: cover; /* Обрезка изображения */
     margin-right: 20px; /* Отступ справа */
 }
+
 .card-info {
-    color: rgba(255, 255, 255, 0.9);
-    text-align: right; /* Выравнивание текста вправо */
+    color: rgba(0, 0, 0, 0.8); /* Тёмно-серый текст */
+    text-align: left; /* Выравнивание текста влево */
     flex-grow: 1; /* Занимает оставшееся пространство */
-    position: relative; /* Для позиционирования маленькой картинки */
 }
+
 .github-icon {
     width: 20px; /* Размер иконки */
     height: 20px; /* Размер иконки */
     cursor: pointer; /* Указатель на иконке */
-    margin-left: 0px; /* Отступ слева уменьшен */
-    vertical-align: middle; /* Вертикальное выравнивание */
 }
+
 .card-details {
     margin-top: 10px;
 }
+
 .detail-row {
     display: flex;
     justify-content: space-between;
     padding: 3px 0;
 }
+
 .detail-label {
     font-weight: bold;
     color: #007BFF; /* Цвет для названий */
 }
+
 .menu {
     text-align: center;
     margin-bottom: 20px;
 }
+
 .menu button {
     padding: 15px 30px;
     font-size: 1.2em;
     color: #fff;
-    background-color: #333;
+    background-color: #007BFF; /* Синяя кнопка */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin: 10px;
     transition: background-color 0.3s;
 }
+
 .menu button:hover, .upload-button:hover {
-    background-color: #555;
+    background-color: #0056b3; /* Темнее при наведении */
 }
+
 .upload-button {
-	background-color: #007BFF; /* Синяя кнопка */
+    background-color: #007BFF; /* Синяя кнопка */
 }
 
 input[type="file"] {
-	display: none; /* Скрыть стандартный input */
+    display: none; /* Скрыть стандартный input */
 }
+
 select, button, .upload-button {
     margin: 0 10px;
     padding: 15px 30px;
-    background-color: #333; /* Как у остальных кнопок */
-    color: #fff;
+    background-color: #f1f1f1; /* Светлый фон для кнопок */
+    color: #333; /* Тёмно-серый текст */
     font-size: 16px;
-    border: none;
+    border: 1px solid #ddd; /* Светлая граница */
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 select:hover, button:hover {
-    background-color: #555;; /* Темнее при наведении */
+    background-color: #e2e2e2; /* Светлее при наведении */
 }
+
 select:focus, button:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
+
 h1 {
     text-align: center;
-    color: #ffffff; /* Белый текст для заголовка */
+    color: #333; /* Тёмно-серый текст для заголовка */
     margin-bottom: 20px;
 }
+
 #controls {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
+
 #infoPanel {
-    background: #222; /* Темный фон для панели информации */
+    background: #f9f9f9; /* Светлый фон для панели информации */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Лёгкая тень для панели */
     margin-top: 20px;
-    color: #ffffff; /* Белый текст */
+    color: #333; /* Тёмно-серый текст */
 }
-h3,h2 {
+
+h3, h2 {
     border-bottom: 2px solid #007BFF;
     padding-bottom: 5px;
     color: #007BFF; /* Синий текст для заголовков */
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
+
 th, td {
-    border: 1px solid #444; /* Темный цвет границ */
+    border: 1px solid #ddd; /* Светлая граница */
     padding: 8px;
     text-align: center;
 }
+
 th {
     background-color: #007BFF; /* Синий фон для заголовков таблицы */
     color: white; /* Белый текст для заголовков таблицы */
 }
+
 svg {
     margin-top: 20px;
-    border: 1px solid #444; /* Темные границы для SVG */
+    border: 1px solid #ddd; /* Светлые границы для SVG */
 }
+
 .node {
-    stroke: #aaa; /* Светло-серый цвет для узлов */
+    stroke: #aaaaaa; /* Светло-серый цвет для узлов */
     stroke-width: 1.5px;
 }
+
 .link {
     fill: none;
-    stroke: #666; /* Темно-серый цвет для связей */
+    stroke: #999999; /* Светло-серый цвет для связей */
     stroke-opacity: 0.6;
 }
+
 .shortest-path {
     stroke: red;
     stroke-width: 2px;
 }
+
 .selected-node {
     fill: orange;
     stroke: #ff8800;
     stroke-width: 3px;
 }
+
 .loop {
     fill: none;
-    stroke: #666; /* Темно-серый цвет для петель */
+    stroke: #999999; /* Светло-серый цвет для петель */
     stroke-width: 2;
 }
+
 .loop-label {
-    fill: white; /* Белый цвет для текстов петель */
+    fill: #333; /* Тёмно-серый цвет для текстов петель */
     text-anchor: middle;
     font-size: 12px;
 }
+
 #graphContainer {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
+
 textarea {
-	width: 100%;
-	height: 150px;
-	margin-bottom: 10px;
-	background-color: #333; /* Тёмный фон для полей ввода */
-	color: #ffffff; /* Цвет текста в поле ввода */
-	border: 1px solid #555; /* Светлая граница */
-	border-radius: 5px;
-	padding: 10px; /* Отступы внутри поля */
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9; /* Светлый фон для текстового поля */
+    color: #333; /* Тёмно-серый текст в поле ввода */
+    border: 1px solid #ddd; /* Светлая граница */
+    border-radius: 5px;
+    padding: 10px; /* Отступы внутри поля */
 }

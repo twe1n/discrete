@@ -14,12 +14,16 @@
 
 <h2>Алгоритм Прима для нахождения минимального остовного дерева</h2>
 
+<div id="controls">
+    <button type="button" id="presetButton">Загрузить Пресет #1</button>
+    <button onclick="location.href='index.html'">На главную</button>
+</div>
+
 <form id="edgeForm">
     <h3>Ввод рёбер графа:</h3>
     <label for="edges">Введите рёбра: (формат: узел1 узел2 вес, например: 0 1 2 для рёбер 0-1 весом 2)</label><br>
     <textarea id="edges" rows="5" cols="40" placeholder="0 1 2&#10;1 2 3&#10;0 3 6&#10;..."></textarea><br>
     <button type="submit">Добавить рёбра</button>
-    <button type="button" id="presetButton">Загрузить Пресет #1</button>
 </form>
 
 <pre id="output"></pre>
