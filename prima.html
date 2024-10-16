@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Алгоритм Прима с вводом рёбер</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>Алгоритм Прима для нахождения минимального остовного дерева</h2>
+
+<form id="edgeForm">
+    <h3>Ввод рёбер графа:</h3>
+    <label for="edges">Введите рёбра: (формат: узел1 узел2 вес, например: 0 1 2 для рёбер 0-1 весом 2)</label><br>
+    <textarea id="edges" rows="5" cols="40" placeholder="0 1 2&#10;1 2 3&#10;0 3 6&#10;..."></textarea><br>
+    <button type="submit">Добавить рёбра</button>
+    <button type="button" id="presetButton">Загрузить Пресет #1</button>
+</form>
+
+<pre id="output"></pre>
+
+<script>
+const graph = Array(8).fill(0).map(() => Array(8).fill(0));
+
+document.getElementById('edgeForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    addEdges();
+});
+
+document.getElementById('presetButton').addEventListener('click', function() {
+    loadPreset();
+});
+
+function loadPreset() {
+    const presetEdges = [
+        '0 1 4',
+        '0 2 1',
+        '1 2 2',
+        '1 3 5',
+        '2 3 8',
+        '2 4 3',
+        '3 4 7',
+        '0 3 6'
+    ];
+
+    const edgesInput = document.getElementById('edges');
+    edgesInput.value = presetEdges.join('\n');
+    addEdges();
+}
+
+function addEdges() {
+    const edgesInput = document.getElementById('edges').value.trim();
+    const edgesArray = edgesInput.split('\n');
+
+    for (let edge of edgesArray) {
+        const [u, v, w] = edge.split(' ').map(Number);
+        if (u < 8 && v < 8 && w >= 0) {
+            graph[u][v] = w;
+            graph[v][u] = w; // Неориентированный граф
+        } else {
+            alert('Ошибка: Пожалуйста, введите корректные значения рёбер (узлы от 0 до 7 и неотрицательный вес).');
+            return;
+        }
+    }
+
+    const mstEdges = primMST(graph);
+    displayMST(mstEdges);
+}
+
+function primMST(graph) {
+    const numVertices = graph.length;
+    const selectedNode = Array(numVertices).fill(false);
+    const edges = [];
+    let edgesCount = 0;
+
+    selectedNode[0] = true;
+
+    while (edgesCount < numVertices - 1) {
+        let minWeight = Infinity;
+        let start = 0;
+        let end = 0;
+
+        for (let i = 0; i < numVertices; i++) {
+            if (selectedNode[i]) {
+                for (let j = 0; j < numVertices; j++) {
+                    if (!selectedNode[j] && graph[i][j] && graph[i][j] < minWeight) {
+                        minWeight = graph[i][j];
+                        start = i;
+                        end = j;
+                    }
+                }
+            }
+        }
+
+        edges.push([start, end]);
+        selectedNode[end] = true;
+        edgesCount++;
+    }
+    return edges;
+}
+
+function displayMST(mstEdges) {
+    const output = document.getElementById('output');
+    output.textContent = 'Минимальное остовное дерево:\n';
+    mstEdges.forEach(edge => {
+        output.textContent += `Ребро: ${edge[0]} - ${edge[1]} \n`;
+    });
+}
+</script>
+
+</body>
+</html>
