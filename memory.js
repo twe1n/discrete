@@ -128,24 +128,38 @@ const saveEdgeListAsFile = () => downloadFile('edgeList.txt', document.getElemen
 const saveAdjListAsFile = () => downloadFile('adjList.txt', document.getElementById('adjListInput').value);
 
 // Функции для загрузки данных из файла
-const loadFile = (inputId) => {
+const loadFile = (inputId, outputId) => {
     const fileInput = document.getElementById(inputId);
-    const file = fileInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            // Получаем текстовое значение файла и отправляем в соответствующее поле
-            const outputId = inputId.replace('Input', '') + 'Input';
-            document.getElementById(outputId).value = e.target.result;
-        };
-        reader.readAsText(file);
+    if (fileInput.files.length === 0) {
+        console.warn('Нет файлов для загрузки.');
+        return;
     }
+
+    const file = fileInput.files[0];
+    
+    const reader = new FileReader();
+        
+    reader.onload = function(e) {
+        const content = e.target.result; // Получаем содержимое файла
+        document.getElementById(outputId).value = content; // Обновляем текстовое поле
+        // Обновляем данные после загрузки
+        if (inputId === 'loadMatrixInput') updateFromMatrix();
+        if (inputId === 'loadEdgeListInput') updateFromEdgeList();
+        if (inputId === 'loadAdjListInput') updateFromAdjList();
+    };
+
+    reader.onerror = function(error) {
+        console.error('Ошибка при чтении файла:', error);
+    };
+
+    // Читаем файл как текст
+    reader.readAsText(file);
 };
 
 // Обработка загрузки файлов
-document.getElementById('loadMatrixInput').addEventListener('change', () => loadFile('loadMatrixInput'));
-document.getElementById('loadEdgeListInput').addEventListener('change', () => loadFile('loadEdgeListInput'));
-document.getElementById('loadAdjListInput').addEventListener('change', () => loadFile('loadAdjListInput'));
+document.getElementById('loadMatrixInput').addEventListener('change', () => loadFile('loadMatrixInput', 'adjMatrixInput'));
+document.getElementById('loadEdgeListInput').addEventListener('change', () => loadFile('loadEdgeListInput', 'edgeListInput'));
+document.getElementById('loadAdjListInput').addEventListener('change', () => loadFile('loadAdjListInput', 'adjListInput'));
 
 // Удаление предыдущих данных до нажатия кнопки
 const clearOutputs = () => {
@@ -158,17 +172,7 @@ const clearOutputs = () => {
     document.getElementById(id).addEventListener('input', clearOutputs);
 });
 
-// Обработка загрузки файлов
-document.getElementById('loadMatrixInput').addEventListener('change', (event) => loadFile('adjMatrixInput', event));
-document.getElementById('loadEdgeListInput').addEventListener('change', (event) => loadFile('edgeListInput', event));
-document.getElementById('loadAdjListInput').addEventListener('change', (event) => loadFile('adjListInput', event));
-
 // Обработка сохранения файлов
 document.getElementById('saveMatrix').onclick = saveMatrixAsFile;
 document.getElementById('saveEdgeList').onclick = saveEdgeListAsFile;
 document.getElementById('saveAdjList').onclick = saveAdjListAsFile;
-
-// Обработка преобразования
-document.getElementById('convertMatrix').onclick = updateFromMatrix;
-document.getElementById('convertEdgeList').onclick = updateFromEdgeList;
-document.getElementById('convertAdjList').onclick = updateFromAdjList;
