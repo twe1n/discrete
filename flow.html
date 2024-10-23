@@ -39,7 +39,7 @@
     const colors = d3.scaleOrdinal(d3.schemeCategory10);
     let simulation;
 
-    function drawGraph(capacity, highlightedLinks) {
+    function drawGraph(capacity, highlightedLinks, realFlow) {
         const nodes = capacity.map((_, i) => ({ id: i, name: `V${i + 1}` }));
         const links = [];
 
@@ -71,7 +71,10 @@
         link.append("text")
             .attr("dy", -5)
             .attr("fill", "black")
-            .text(d => d.capacity);
+            .text(d => {
+                const realFlowValue = d.capacity - realFlow[d.source][d.target] || 0; // Получаем реальный поток
+                return `${d.capacity} / ${realFlowValue}`; // Отображаем максимальный и реальный поток
+            });
 
         const arrowhead = linkGroup.append("defs").selectAll(".arrowhead")
             .data(links)
@@ -167,6 +170,9 @@
         const originalCapacity = JSON.parse(JSON.stringify(capacity));
         const paths = [];
         const highlightedLinks = [];  // Для хранения рёбер, по которым проходит поток
+        
+        // Массив для хранения реальных потоков
+        const realFlow = Array(numVertices).fill(0).map(() => Array(numVertices).fill(0));
 
         function bfs(parent) {
             const visited = Array(numVertices).fill(false);
@@ -211,6 +217,7 @@
                     highlightedLinks.push(`${u}-${v}`);
                     capacity[u][v] -= pathFlow;
                     capacity[v][u] += pathFlow;
+                    realFlow[u][v] += pathFlow;  // Записываем реальный поток
                 }
 
                 maxFlow += pathFlow;
@@ -243,8 +250,9 @@
         }
 
         document.getElementById('minCut').innerText = `Минимальный разрез: ${minCutEdges.join(', ')}`;
-        
-        drawGraph(originalCapacity, highlightedLinks);  // Передаем выделенные рёбра для визуализации
+
+        // Визуализация графа с реальными потоками
+        drawGraph(originalCapacity, highlightedLinks, realFlow);
     }
 
     function dragstarted(event, d) {
