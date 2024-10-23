@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Максимальный поток и минимальный разрез</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+
+<h1>Максимальный поток и минимальный разрез в транспортной сети</h1>
+
+<label for="inputMatrix">Введите матрицу смежности:</label><br>
+<textarea id="inputMatrix" rows="6" cols="30">0 1 2 0 0 0
+0 0 4 5 6 0
+0 0 0 3 7 0
+0 0 0 0 0 7
+0 0 0 0 0 9
+0 0 0 0 0 0</textarea><br>
+
+<button onclick="calculateMaxFlow()">Найти максимальный поток и минимальный разрез</button>
+
+<h2>Результат:</h2>
+<p id="result"></p>
+
+<h2>Все пути с максимальным потоком:</h2>
+<ul id="paths"></ul>
+
+<h2>Минимальный разрез:</h2>
+<p id="minCut"></p>
+
+<h2>Визуализация графа:</h2>
+<svg id="graph" width="800" height="600"></svg>
+
+<script>
+    const width = 800;
+    const height = 600;
+    const colors = d3.scaleOrdinal(d3.schemeCategory10);
+    let simulation;
+
+    function drawGraph(capacity, highlightedLinks) {
+        const nodes = capacity.map((_, i) => ({ id: i, name: `V${i + 1}` }));
+        const links = [];
+
+        for (let u = 0; u < capacity.length; u++) {
+            for (let v = 0; v < capacity.length; v++) {
+                if (capacity[u][v] > 0) {
+                    links.push({ source: u, target: v, capacity: capacity[u][v] });
+                }
+            }
+        }
+
+        const svg = d3.select("#graph");
+        svg.selectAll("*").remove(); // Очистить предыдущее содержимое
+
+        simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink().distance(250).strength(1))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        const linkGroup = svg.append("g").attr("class", "links");
+        const link = linkGroup.selectAll("g")
+            .data(links)
+            .enter().append("g");
+
+        link.append("line")
+            .attr("stroke-width", d => Math.sqrt(d.capacity))
+            .attr("stroke", d => highlightedLinks.includes(`${d.source}-${d.target}`) ? 'red' : 'black'); // Высветить красным
+
+        link.append("text")
+            .attr("dy", -5)
+            .attr("fill", "black")
+            .text(d => d.capacity);
+
+        const arrowhead = linkGroup.append("defs").selectAll(".arrowhead")
+            .data(links)
+            .enter()
+            .append("marker")
+            .attr("class", "arrowhead")
+            .attr("id", (d, i) => `arrowhead${i}`)
+            .attr("viewBox", "0 0 10 10")
+            .attr("refX", 15)
+            .attr("refY", 5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("polygon")
+            .attr("points", "0 0, 10 5, 0 10")
+            .attr("fill", "black");
+
+        link.select("line")
+            .attr("marker-end", (d, i) => `url(#arrowhead${i})`);
+
+        const node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("r", 12)
+            .attr("fill", (d, i) => colors(i))
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("title").text(d => d.name);
+
+        const nodeText = svg.append("g").attr("class", "texts")
+            .selectAll("text")
+            .data(nodes)
+            .enter().append("text")
+            .attr("x", d => d.x)
+            .attr("y", d => d.y)
+            .text(d => d.name)
+            .attr("fill", "black");
+
+        simulation
+            .nodes(nodes)
+            .on("tick", () => {
+                link.select("line")
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                link.select("text")
+                    .attr("x", (d) => (d.source.x + d.target.x) / 2)
+                    .attr("y", (d) => (d.source.y + d.target.y) / 2 - 10);
+
+                node.attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                nodeText.attr("x", d => d.x + 15)
+                    .attr("y", d => d.y + 5);
+            });
+
+        simulation.force("link").links(links);
+    }
+
+    function bfsReachability(capacity, source) {
+        const visited = Array(capacity.length).fill(false);
+        const queue = [];
+        queue.push(source);
+        visited[source] = true;
+
+        while (queue.length > 0) {
+            const u = queue.shift();
+
+            for (let v = 0; v < capacity.length; v++) {
+                if (!visited[v] && capacity[u][v] > 0) {
+                    queue.push(v);
+                    visited[v] = true;
+                }
+            }
+        }
+
+        return visited;  // Массив достижимости
+    }
+
+    function calculateMaxFlow() {
+        const inputText = document.getElementById('inputMatrix').value.trim();
+        let capacity = inputText.split('\n').map(row => row.split(' ').map(Number));
+        const source = 0;  // V1
+        const sink = capacity.length - 1;  // V6
+        const numVertices = capacity.length;
+        const originalCapacity = JSON.parse(JSON.stringify(capacity));
+        const paths = [];
+        const highlightedLinks = [];  // Для хранения рёбер, по которым проходит поток
+
+        function bfs(parent) {
+            const visited = Array(numVertices).fill(false);
+            const queue = [];
+            queue.push(source);
+            visited[source] = true;
+
+            while (queue.length > 0) {
+                const u = queue.shift();
+
+                for (let v = 0; v < numVertices; v++) {
+                    if (!visited[v] && capacity[u][v] > 0) {
+                        queue.push(v);
+                        visited[v] = true;
+                        parent[v] = u;
+
+                        if (v === sink) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function fordFulkerson() {
+            const parent = Array(numVertices).fill(-1);
+            let maxFlow = 0;
+
+            while (bfs(parent)) {
+                let pathFlow = Infinity;
+                const currentPath = [];
+
+                for (let v = sink; v !== source; v = parent[v]) {
+                    currentPath.push(v + 1);  // Добавляем к пути (1-индексация)
+                    pathFlow = Math.min(pathFlow, capacity[parent[v]][v]); // Корректируем путь
+                }
+                currentPath.push(source + 1);  // Добавляем начальный узел
+                paths.push(currentPath.reverse().join(' -> ')); // Путь в правильном порядке
+
+                // Добавляем рёбра, по которым проходит поток
+                for (let v = sink; v !== source; v = parent[v]) {
+                    const u = parent[v];
+                    highlightedLinks.push(`${u}-${v}`);
+                    capacity[u][v] -= pathFlow;
+                    capacity[v][u] += pathFlow;
+                }
+
+                maxFlow += pathFlow;
+            }
+            return maxFlow;
+        }
+
+        const maxFlow = fordFulkerson();
+        const resultText = `Максимальный поток: ${maxFlow}`;
+        document.getElementById('result').innerText = resultText;
+
+        const pathsList = document.getElementById('paths');
+        pathsList.innerHTML = ''; // Очистить предыдущие пути
+        paths.forEach(path => {
+            const li = document.createElement('li');
+            li.innerText = path;
+            pathsList.appendChild(li);
+        });
+
+        // Нахождение минимум разреза
+        const reachable = bfsReachability(capacity, source);
+        const minCutEdges = [];
+
+        for (let u = 0; u < capacity.length; u++) {
+            for (let v = 0; v < capacity.length; v++) {
+                if (reachable[u] && !reachable[v] && originalCapacity[u][v] > 0) {
+                    minCutEdges.push(`V${u + 1} -> V${v + 1}`);
+                }
+            }
+        }
+
+        document.getElementById('minCut').innerText = `Минимальный разрез: ${minCutEdges.join(', ')}`;
+        
+        drawGraph(originalCapacity, highlightedLinks);  // Передаем выделенные рёбра для визуализации
+    }
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0); // Останавливаем симуляцию
+        d.fx = null; // Не фиксируем узлы
+        d.fy = null;
+    }
+</script>
+
+</body>
+</html>
